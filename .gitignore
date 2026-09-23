@@ -1,0 +1,22 @@
+# Java
+*.class
+
+# Build output
+out/
+build/
+target/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Saved application output
+floor_plan.txt
