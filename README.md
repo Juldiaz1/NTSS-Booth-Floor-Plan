@@ -27,7 +27,7 @@ https://github.com/Juldiaz1/NTSS-Booth-Floor-Plan
 
 ## Design Patterns
 
-This project demonstrates the following design patterns:
+The project demonstrates the following design patterns:
 
 - Controller
 - Creator
@@ -38,7 +38,7 @@ This project demonstrates the following design patterns:
 
 ### Controller
 
-`FloorPlanController` manages application operations such as booth placement, validation, and saving.
+`FloorPlanController` manages booth placement, validation, and saving.
 
 ### Creator
 
@@ -46,21 +46,21 @@ This project demonstrates the following design patterns:
 
 ### Expert
 
-`FloorPlan` is responsible for operations involving the booth collection and floor plan.
+`FloorPlan` manages information and operations related to the booth collection.
 
 ### Composite
 
-`BoothComponent`, `Booth`, and `BoothGroup` allow individual booths and booth collections to be handled through a common structure.
+`BoothComponent`, `Booth`, and `BoothGroup` allow individual booths and booth groups to use a common structure.
 
 ### Iterator
 
-`BoothIterator` and `FloorPlanIterator` provide a way to traverse the booth collection.
+`BoothIterator` and `FloorPlanIterator` provide traversal of the booth collection.
 
 ### Flyweight
 
 `BoothType` and `BoothTypeFactory` allow shared booth type information to be reused.
 
-Individual booths can still have their own locations and custom colors.
+Individual booths can still have their own positions and custom colors.
 
 ## Main Files
 
@@ -77,38 +77,77 @@ FloorPlanController.java
 FloorPlanIterator.java
 Main.java
 NTSSStaffUI.java
-Requirements
+```
+
+# Requirements
 
 The project requires the Java Development Kit (JDK).
 
-Check Java:
+## Check Java Installation
 
+Open PowerShell or a terminal and run:
+
+```powershell
 java -version
 javac -version
+```
 
-Both commands should return a Java version.
+Both commands should return an installed Java version.
 
-Running the Project
+The project also requires Git if you want to clone the repository from GitHub.
 
-The project can be run directly from Windows PowerShell or through GitHub Codespaces.
+Check Git:
 
-Option 1: Windows PowerShell
+```powershell
+git --version
+```
 
-Open PowerShell and enter the project folder:
+# How to Get and Run the Project
 
-cd "C:\Users\julis\NTSS-Booth-Floor-Plan"
+There are two ways to access and compile this project.
 
-Compile the project:
+# Option 1: Clone the GitHub Repository
 
+This option downloads the project to your computer.
+
+## Step 1: Clone the Repository
+
+Open PowerShell:
+
+```powershell
+git clone https://github.com/Juldiaz1/NTSS-Booth-Floor-Plan.git
+```
+
+## Step 2: Enter the Project Folder
+
+```powershell
+cd NTSS-Booth-Floor-Plan
+```
+
+## Step 3: Check Java
+
+```powershell
+java -version
+javac -version
+```
+
+## Step 4: Compile the Java Files
+
+```powershell
 javac *.java
+```
 
-Run the application:
+## Step 5: Run the Application
 
+```powershell
 java Main
-Recommended PowerShell Build
+```
 
-A cleaner build uses a separate out directory:
+## Recommended Clone Build
 
+The project can also be compiled into a separate `out` directory:
+
+```powershell
 Remove-Item -Recurse -Force out -ErrorAction SilentlyContinue
 
 New-Item -ItemType Directory -Path out -Force | Out-Null
@@ -117,65 +156,135 @@ javac -d out (Get-ChildItem -Filter *.java |
     ForEach-Object {
         $_.FullName
     })
+```
 
-Run the compiled application:
+Then run:
 
+```powershell
 java -cp out Main
-Option 2: GitHub Codespaces
+```
 
-Open:
+# Option 2: GitHub Codespaces
+
+This option allows the project to be opened directly in a cloud development environment.
+
+## Step 1: Open the Repository
+
+Go to:
 
 https://github.com/Juldiaz1/NTSS-Booth-Floor-Plan
 
+## Step 2: Create a Codespace
+
 Select:
 
+```text
 Code
 → Codespaces
 → Create codespace on main
+```
 
-After the Codespace opens:
+## Step 3: Check Java
 
+After the Codespace opens, open the terminal and run:
+
+```bash
+java -version
+javac -version
+```
+
+## Step 4: Compile the Project
+
+```bash
 javac *.java
+```
 
-Then:
+## Step 5: Run the Application
 
+```bash
 java Main
+```
 
-Or use:
+## Recommended Codespace Build
 
+```bash
 rm -rf out
 mkdir out
 javac -d out *.java
+```
+
+Then:
+
+```bash
 java -cp out Main
-How to Use the Application
-Select a booth shape.
-Select a booth size.
-Select a booth color.
-Click Place Booth.
-Click somewhere on the floor-plan canvas.
-The booth is placed at that location.
-Click an existing booth to select it.
-Use the color controls to recolor the selected booth.
-Use the background controls to change the floor-plan background.
-Click Save Floor Plan to save the current design.
-Booth Shapes
+```
 
-The application supports:
+# Important
 
+Both options use the same Java source code.
+
+## Clone Method
+
+```text
+GitHub Repository
+       |
+     Clone
+       |
+  Project Folder
+       |
+   javac *.java
+       |
+    java Main
+```
+
+## Codespaces Method
+
+```text
+GitHub Repository
+       |
+    Codespaces
+       |
+ Create Codespace
+       |
+   javac *.java
+       |
+    java Main
+```
+
+# How to Use the Application
+
+1. Select a booth shape.
+2. Select a booth size.
+3. Select a booth color.
+4. Click `Place Booth`.
+5. Click somewhere on the floor-plan canvas.
+6. The booth is placed at that location.
+7. Click an existing booth to select it.
+8. Use the color controls to recolor the selected booth.
+9. Use the background controls to change the floor-plan background.
+10. Click `Save Floor Plan` to save the current design.
+
+# Booth Shapes
+
+```text
 Circle
 Square
 Rectangle
-Booth Sizes
+```
 
-Each shape supports:
+# Booth Sizes
 
+```text
 Small
 Medium
 Large
-Booth Colors
+```
+
+# Booth Colors
 
 Preset colors include:
 
+```text
 Blue
 Green
 Orange
@@ -184,22 +293,25 @@ Purple
 Teal
 Gold
 Pink
+```
 
 A custom booth color can also be selected using the Java color chooser.
 
-Background Themes
+# Background Themes
 
 Preset backgrounds include:
 
+```text
 Light
 Blueprint
 Night
 Warm
 Custom
+```
 
-A custom background color can also be selected using the color chooser.
+A custom background color can also be selected.
 
-Selecting and Editing Booths
+# Selecting and Editing Booths
 
 Click an existing booth on the floor plan to select it.
 
@@ -207,18 +319,19 @@ The selected booth is highlighted.
 
 After selecting a booth, its color can be changed without creating a new booth.
 
-Placement Validation
+# Placement Validation
 
 The controller checks whether a booth fits inside the floor-plan boundaries before adding it.
 
 If the booth does not fit, the application displays a placement error instead of adding the booth.
 
-Saving a Floor Plan
+# Saving a Floor Plan
 
-The Save Floor Plan button allows the current floor plan to be exported to a text file.
+The `Save Floor Plan` button exports the current floor plan to a text file.
 
-The saved file contains information such as:
+Saved information includes:
 
+```text
 Date Created
 Floor Width
 Floor Height
@@ -231,15 +344,21 @@ X Position
 Y Position
 Color
 Image
-Application Entry Point
+```
+
+# Application Entry Point
 
 The main entry point is:
 
+```text
 Main.java
+```
 
-Main.java creates the controller, creates demonstration booths, and launches the Java Swing user interface.
+`Main.java` creates the controller, creates demonstration booths, and launches the Java Swing interface.
 
-Project Structure
+# Project Structure
+
+```text
 NTSS-Booth-Floor-Plan/
 |
 |-- Booth.java
@@ -258,28 +377,30 @@ NTSS-Booth-Floor-Plan/
 |-- README.md
 |-- NTSS_BoothFloorPlan_Report.md
 |-- NTSS_BoothFloorPlan_Report.pdf
-Future Enhancements
+```
 
-Possible future improvements include:
+# Future Enhancements
 
-Booth deletion
-Booth movement
-Undo and redo
-Booth search
-Booth filtering
-Booth reservation status
-Booth names and identifiers
-Collision detection
-Loading previously saved floor plans
-Database storage
-Additional booth shapes
-Author
+- Booth deletion
+- Booth movement
+- Undo and redo
+- Booth search
+- Booth filtering
+- Booth reservation status
+- Booth names and identifiers
+- Collision detection
+- Loading previously saved floor plans
+- Database storage
+- Additional booth shapes
+
+# Author
 
 Julissa Diaz
 
 Software Engineering
+
 University of Texas at Arlington
 
-Repository
+# Repository
 
 https://github.com/Juldiaz1/NTSS-Booth-Floor-Plan
