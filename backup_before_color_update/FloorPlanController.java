@@ -8,15 +8,10 @@ import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 public class FloorPlanController {
-
     private final FloorPlan floorPlan;
 
     public FloorPlanController() {
-
-        floorPlan =
-                new FloorPlan(
-                        1100,
-                        620);
+        floorPlan = new FloorPlan(900, 550);
     }
 
     public FloorPlan getFloorPlan() {
@@ -34,7 +29,8 @@ public class FloorPlanController {
                 y,
                 shape,
                 size,
-                null);
+                Color.GRAY,
+                false);
     }
 
     public Booth placeBooth(
@@ -42,7 +38,8 @@ public class FloorPlanController {
             int y,
             String shape,
             String size,
-            Color color) {
+            Color color,
+            boolean threeD) {
 
         validateCoordinates(
                 x,
@@ -55,7 +52,8 @@ public class FloorPlanController {
                 y,
                 shape,
                 size,
-                color);
+                color,
+                threeD);
     }
 
     private void validateCoordinates(
@@ -82,14 +80,10 @@ public class FloorPlanController {
         }
     }
 
-    public boolean saveFloorPlan(
-            File file) {
-
-        try (
-                PrintWriter writer =
-                        new PrintWriter(
-                                new FileWriter(file))
-        ) {
+    public boolean saveFloorPlan(File file) {
+        try (PrintWriter writer =
+                     new PrintWriter(
+                             new FileWriter(file))) {
 
             writer.println(
                     "NTSS BOOTH FLOOR PLAN");
@@ -118,12 +112,7 @@ public class FloorPlanController {
             int number = 1;
 
             while (iterator.hasNext()) {
-
-                Booth booth =
-                        iterator.next();
-
-                Color color =
-                        booth.getDisplayColor();
+                Booth booth = iterator.next();
 
                 writer.println(
                         "Booth " + number);
@@ -149,16 +138,23 @@ public class FloorPlanController {
                                 + booth.getyLocation());
 
                 writer.println(
-                        "Color RGB: "
-                                + color.getRed()
-                                + ", "
-                                + color.getGreen()
-                                + ", "
-                                + color.getBlue());
-
-                writer.println(
                         "Image: "
                                 + booth.getImage());
+
+                writer.println(
+                        "Color: RGB("
+                                + booth.getColor().getRed()
+                                + ","
+                                + booth.getColor().getGreen()
+                                + ","
+                                + booth.getColor().getBlue()
+                                + ")");
+
+                writer.println(
+                        "View: "
+                                + (booth.isThreeD()
+                                ? "3D"
+                                : "2D"));
 
                 writer.println();
 

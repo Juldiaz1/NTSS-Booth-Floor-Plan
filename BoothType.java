@@ -1,11 +1,8 @@
 import java.awt.Color;
-import java.awt.GradientPaint;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.Ellipse2D;
 
 public class BoothType {
+
     private final String size;
     private final String shape;
     private final float price;
@@ -22,6 +19,7 @@ public class BoothType {
             int width,
             int height,
             Color color) {
+
         this.size = size;
         this.shape = shape;
         this.price = price;
@@ -29,6 +27,99 @@ public class BoothType {
         this.width = width;
         this.height = height;
         this.color = color;
+    }
+
+    public void draw(
+            Graphics2D g,
+            int x,
+            int y) {
+
+        draw(
+                g,
+                x,
+                y,
+                color);
+    }
+
+    /*
+     * Supports booth-specific colors while keeping
+     * BoothType shared by the Flyweight Factory.
+     */
+    public void draw(
+            Graphics2D g,
+            int x,
+            int y,
+            Color overrideColor) {
+
+        Color oldColor =
+                g.getColor();
+
+        Color fillColor =
+                overrideColor != null
+                        ? overrideColor
+                        : color;
+
+        g.setColor(fillColor);
+
+        if ("circle".equalsIgnoreCase(
+                shape)) {
+
+            g.fillOval(
+                    x,
+                    y,
+                    width,
+                    height);
+
+            g.setColor(
+                    new Color(
+                            45,
+                            45,
+                            45));
+
+            g.drawOval(
+                    x,
+                    y,
+                    width,
+                    height);
+
+        } else {
+
+            g.fillRoundRect(
+                    x,
+                    y,
+                    width,
+                    height,
+                    12,
+                    12);
+
+            g.setColor(
+                    new Color(
+                            45,
+                            45,
+                            45));
+
+            g.drawRoundRect(
+                    x,
+                    y,
+                    width,
+                    height,
+                    12,
+                    12);
+        }
+
+        g.setColor(Color.WHITE);
+
+        String text =
+                shape.substring(0, 1)
+                        .toUpperCase()
+                        + shape.substring(1);
+
+        g.drawString(
+                text,
+                x + 8,
+                y + height / 2);
+
+        g.setColor(oldColor);
     }
 
     public String getSize() {
@@ -57,110 +148,5 @@ public class BoothType {
 
     public Color getColor() {
         return color;
-    }
-
-    public void draw(
-            Graphics2D g,
-            int x,
-            int y) {
-        draw(
-                g,
-                x,
-                y,
-                color,
-                false);
-    }
-
-    public void draw(
-            Graphics2D g,
-            int x,
-            int y,
-            Color boothColor,
-            boolean threeD) {
-
-        if (boothColor == null) {
-            boothColor = color;
-        }
-
-        Shape boothShape;
-
-        if ("circle".equalsIgnoreCase(shape)) {
-            boothShape = new Ellipse2D.Double(
-                    x,
-                    y,
-                    width,
-                    height);
-        } else {
-            boothShape = new Rectangle(
-                    x,
-                    y,
-                    width,
-                    height);
-        }
-
-        if (threeD) {
-            Color light = makeLighter(boothColor);
-            Color dark = makeDarker(boothColor);
-
-            GradientPaint gradient =
-                    new GradientPaint(
-                            x,
-                            y,
-                            light,
-                            x + width,
-                            y + height,
-                            dark);
-
-            g.setPaint(gradient);
-            g.fill(boothShape);
-            g.setColor(makeDarker(dark));
-        } else {
-            g.setColor(boothColor);
-            g.fill(boothShape);
-            g.setColor(boothColor.darker());
-        }
-
-        g.draw(boothShape);
-
-        g.setColor(Color.BLACK);
-
-        String label =
-                capitalize(shape)
-                        + " "
-                        + capitalize(size);
-
-        int textX =
-                x + (width
-                        - g.getFontMetrics()
-                                .stringWidth(label)) / 2;
-
-        int textY =
-                y + (height
-                        + g.getFontMetrics()
-                                .getAscent()) / 2;
-
-        g.drawString(
-                label,
-                textX,
-                textY);
-    }
-
-    private Color makeLighter(Color original) {
-        return new Color(
-                Math.min(255, original.getRed() + 65),
-                Math.min(255, original.getGreen() + 65),
-                Math.min(255, original.getBlue() + 65));
-    }
-
-    private Color makeDarker(Color original) {
-        return new Color(
-                (int) (original.getRed() * 0.65),
-                (int) (original.getGreen() * 0.65),
-                (int) (original.getBlue() * 0.65));
-    }
-
-    private String capitalize(String text) {
-        return text.substring(0, 1).toUpperCase()
-                + text.substring(1);
     }
 }
