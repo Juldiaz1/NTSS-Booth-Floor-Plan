@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 
@@ -6,16 +5,44 @@ public class Booth extends BoothComponent {
     private final int xLocation;
     private final int yLocation;
     private final BoothType boothType;
+    private final Color color;
+    private final boolean threeD;
 
-    public Booth(int xLocation, int yLocation, BoothType boothType) {
+    public Booth(
+            int xLocation,
+            int yLocation,
+            BoothType boothType) {
+        this(
+                xLocation,
+                yLocation,
+                boothType,
+                boothType.getColor(),
+                false);
+    }
+
+    public Booth(
+            int xLocation,
+            int yLocation,
+            BoothType boothType,
+            Color color,
+            boolean threeD) {
         this.xLocation = xLocation;
         this.yLocation = yLocation;
         this.boothType = boothType;
+        this.color = color == null
+                ? boothType.getColor()
+                : color;
+        this.threeD = threeD;
     }
 
     @Override
     public void draw(Graphics2D g) {
-        boothType.draw(g, xLocation, yLocation);
+        boothType.draw(
+                g,
+                xLocation,
+                yLocation,
+                color,
+                threeD);
     }
 
     @Override
@@ -38,8 +65,20 @@ public class Booth extends BoothComponent {
         return boothType.getHeight();
     }
 
-    public BoothType getBoothType() {
-        return boothType;
+    public String getShape() {
+        return boothType.getShape();
+    }
+
+    public String getSize() {
+        return boothType.getSize();
+    }
+
+    public double getPrice() {
+        return boothType.getPrice();
+    }
+
+    public String getImage() {
+        return boothType.getImage();
     }
 
     public int getxLocation() {
@@ -50,36 +89,11 @@ public class Booth extends BoothComponent {
         return yLocation;
     }
 
-    public String getShape() {
-        return boothType.getShape();
+    public Color getColor() {
+        return color;
     }
 
-    public String getSize() {
-        return boothType.getSize();
-    }
-
-    public float getPrice() {
-        return boothType.getPrice();
-    }
-
-    public String getImage() {
-        return boothType.getImage();
-    }
-
-    public boolean contains(int mouseX, int mouseY) {
-        if ("circle".equalsIgnoreCase(boothType.getShape())) {
-            double centerX = xLocation + getWidth() / 2.0;
-            double centerY = yLocation + getHeight() / 2.0;
-            double radiusX = getWidth() / 2.0;
-            double radiusY = getHeight() / 2.0;
-            double dx = (mouseX - centerX) / radiusX;
-            double dy = (mouseY - centerY) / radiusY;
-            return dx * dx + dy * dy <= 1.0;
-        }
-
-        return mouseX >= xLocation
-                && mouseX <= xLocation + getWidth()
-                && mouseY >= yLocation
-                && mouseY <= yLocation + getHeight();
+    public boolean isThreeD() {
+        return threeD;
     }
 }

@@ -1,5 +1,5 @@
-
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -8,6 +8,7 @@ import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,10 +22,15 @@ public class NTSSStaffUI extends JFrame {
 
     private final JComboBox<String> shapeBox;
     private final JComboBox<String> sizeBox;
+    private final JComboBox<String> modeBox;
     private final JLabel statusLabel;
+    private final JLabel colorLabel;
+    private final JPanel colorPreview;
 
     private String selectedShape = "circle";
     private String selectedSize = "small";
+    private Color selectedColor = new Color(70, 130, 180);
+    private boolean threeD = true;
 
     public NTSSStaffUI(FloorPlanController controller) {
         this.controller = controller;
@@ -33,39 +39,70 @@ public class NTSSStaffUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
 
-        JPanel topPanel = new JPanel(new BorderLayout());
+        JPanel topPanel = new JPanel(new BorderLayout(8, 8));
+        topPanel.setBorder(
+                BorderFactory.createEmptyBorder(10, 10, 5, 10));
 
-        JPanel selectionPanel = new JPanel(
-                new FlowLayout(FlowLayout.LEFT));
+        JPanel controls = new JPanel(
+                new FlowLayout(FlowLayout.LEFT, 10, 5));
 
-        selectionPanel.add(new JLabel("Shape:"));
+        controls.add(new JLabel("Shape:"));
 
         shapeBox = new JComboBox<>(
                 new String[]{"circle", "square", "rectangle"});
+        controls.add(shapeBox);
 
-        selectionPanel.add(shapeBox);
-
-        selectionPanel.add(new JLabel("Size:"));
+        controls.add(new JLabel("Size:"));
 
         sizeBox = new JComboBox<>(
                 new String[]{"small", "medium", "large"});
+        controls.add(sizeBox);
 
-        selectionPanel.add(sizeBox);
+        controls.add(new JLabel("View:"));
 
-        JButton selectButton = new JButton("Select Booth");
-        selectionPanel.add(selectButton);
+        modeBox = new JComboBox<>(
+                new String[]{"2D", "3D"});
+        modeBox.setSelectedItem("3D");
+        controls.add(modeBox);
+
+        JButton colorButton = new JButton("Choose Color");
+        controls.add(colorButton);
+
+        colorPreview = new JPanel();
+        colorPreview.setPreferredSize(new Dimension(35, 25));
+        colorPreview.setBackground(selectedColor);
+        colorPreview.setBorder(
+                BorderFactory.createLineBorder(Color.BLACK));
+
+        controls.add(colorPreview);
+
+        colorLabel = new JLabel(getColorText());
+        controls.add(colorLabel);
+
+        JButton selectButton = new JButton("Place Booth");
+        controls.add(selectButton);
 
         JButton saveButton = new JButton("Save");
-        selectionPanel.add(saveButton);
+        controls.add(saveButton);
 
-        topPanel.add(selectionPanel, BorderLayout.NORTH);
+        topPanel.add(controls, BorderLayout.NORTH);
+
+        JPanel paletteTitle = new JPanel(
+                new FlowLayout(FlowLayout.LEFT));
+
+        paletteTitle.add(new JLabel(
+                "Booth Palette - choose a shape and size:"));
+
+        topPanel.add(paletteTitle, BorderLayout.CENTER);
 
         JPanel palettePanel = createPalettePanel();
+
         topPanel.add(palettePanel, BorderLayout.SOUTH);
 
         add(topPanel, BorderLayout.NORTH);
 
         canvas = new FloorPlanCanvas(controller, this);
+
         canvas.setPreferredSize(
                 new Dimension(
                         controller.getFloorPlan().getWidth(),
@@ -74,11 +111,11 @@ public class NTSSStaffUI extends JFrame {
         add(canvas, BorderLayout.CENTER);
 
         statusLabel = new JLabel(
-                "Select a booth and click a location on the canvas.",
+                "Choose a booth, color, and view mode, then click Place Booth.",
                 SwingConstants.LEFT);
 
         statusLabel.setBorder(
-                BorderFactory.createEmptyBorder(5, 10, 5, 10));
+                BorderFactory.createEmptyBorder(5, 10, 10, 10));
 
         add(statusLabel, BorderLayout.SOUTH);
 
@@ -90,15 +127,29 @@ public class NTSSStaffUI extends JFrame {
             selectedSize = (String) sizeBox.getSelectedItem();
         });
 
+        modeBox.addActionListener(e -> {
+            threeD = "3D".equals(modeBox.getSelectedItem());
+
+            statusLabel.setText(
+                    "View mode: "
+                            + (threeD ? "3D" : "2D")
+                            + ".");
+        });
+
+        colorButton.addActionListener(e -> chooseColor());
+
         selectButton.addActionListener(e -> {
             selectedShape = (String) shapeBox.getSelectedItem();
             selectedSize = (String) sizeBox.getSelectedItem();
+            threeD = "3D".equals(modeBox.getSelectedItem());
 
             statusLabel.setText(
                     "Selected: "
                             + selectedShape
                             + " "
                             + selectedSize
+                            + " "
+                            + (threeD ? "3D" : "2D")
                             + ". Click the canvas.");
 
             canvas.setPlacementMode(true);
@@ -111,20 +162,30 @@ public class NTSSStaffUI extends JFrame {
     }
 
     private JPanel createPalettePanel() {
-        JPanel panel = new JPanel(new GridLayout(3, 3, 5, 5));
+        JPanel panel = new JPanel(
+                new GridLayout(3, 3, 8, 8));
 
         String[] shapes = {
-            "circle", "square", "rectangle"
+            "circle",
+            "square",
+            "rectangle"
         };
 
         String[] sizes = {
-            "small", "medium", "large"
+            "small",
+            "medium",
+            "large"
         };
 
         for (String shape : shapes) {
             for (String size : sizes) {
                 JButton button = new JButton(
-                        capitalize(shape) + " " + capitalize(size));
+                        capitalize(shape)
+                                + " "
+                                + capitalize(size));
+
+                button.setPreferredSize(
+                        new Dimension(130, 38));
 
                 button.addActionListener(e -> {
                     selectedShape = shape;
@@ -134,8 +195,11 @@ public class NTSSStaffUI extends JFrame {
                     sizeBox.setSelectedItem(size);
 
                     statusLabel.setText(
-                            "Selected: " + shape + " " + size
-                                    + ". Click the canvas to place it.");
+                            "Selected: "
+                                    + shape
+                                    + " "
+                                    + size
+                                    + ". Click Place Booth.");
 
                     canvas.setPlacementMode(true);
                 });
@@ -145,6 +209,34 @@ public class NTSSStaffUI extends JFrame {
         }
 
         return panel;
+    }
+
+    private void chooseColor() {
+        Color newColor = JColorChooser.showDialog(
+                this,
+                "Choose Booth Color",
+                selectedColor);
+
+        if (newColor == null) {
+            return;
+        }
+
+        selectedColor = newColor;
+
+        colorPreview.setBackground(selectedColor);
+        colorLabel.setText(getColorText());
+
+        statusLabel.setText(
+                "Color selected: " + getColorText());
+    }
+
+    private String getColorText() {
+        return "RGB "
+                + selectedColor.getRed()
+                + ","
+                + selectedColor.getGreen()
+                + ","
+                + selectedColor.getBlue();
     }
 
     private void saveFloorPlan() {
@@ -158,7 +250,8 @@ public class NTSSStaffUI extends JFrame {
         }
 
         JFileChooser chooser = new JFileChooser();
-        chooser.setSelectedFile(new File("floor_plan.txt"));
+        chooser.setSelectedFile(
+                new File("floor_plan.txt"));
 
         int result = chooser.showSaveDialog(this);
 
@@ -187,6 +280,14 @@ public class NTSSStaffUI extends JFrame {
 
     public String getSelectedSize() {
         return selectedSize;
+    }
+
+    public Color getSelectedColor() {
+        return selectedColor;
+    }
+
+    public boolean isThreeD() {
+        return threeD;
     }
 
     public void showPlacementError(String message) {
