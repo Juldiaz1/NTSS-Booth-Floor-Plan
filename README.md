@@ -397,9 +397,7 @@ NTSS-Booth-Floor-Plan/
 
 Julissa Diaz
 
-Software Engineering
-
-University of Texas at Arlington
+Software Engineer
 
 # Repository
 
